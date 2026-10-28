@@ -340,6 +340,12 @@ h3 {
 /* スマホ */
 @media screen and (max-width: 1023px) {
   .rightcontainer { margin-top: 40px; }
+  /* バナーは画面の横幅いっぱいに（コンテンツ部分の余白を打ち消す） */
+  .banner {
+    width: calc(100% + 32px);
+    max-width: none;
+    margin: -16px -16px 0;
+  }
 }
 </style>
 </head>
@@ -349,7 +355,7 @@ h3 {
   <main class="leftcontainer">
 
     <!-- ① メインバナー -->
-    <img src="assets/banner.jpg" width="2000" height="1000" alt="AIに、あなたのサロンはどう紹介されていますか？ 11月11日（水）・12日（木）19:00〜 無料オンラインセミナー">
+    <img class="banner" src="assets/banner.jpg" width="2000" height="1000" alt="AIに、あなたのサロンはどう紹介されていますか？ 11月11日（水）・12日（木）19:00〜 無料オンラインセミナー">
     <a href="#apply" class="btn js-to-form">お申し込みはこちら（無料）</a>
 
     <!-- ② セミナー概要 -->
