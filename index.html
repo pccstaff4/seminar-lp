@@ -311,6 +311,8 @@ h3 {
 
 /* PC */
 @media screen and (min-width: 1024px) {
+  /* PCはフォームが常に右側に見えているので、フォームへ移動するボタンは出さない */
+  .js-to-form { display: none; }
   .container {
     display: flex;
     align-items: flex-start;
