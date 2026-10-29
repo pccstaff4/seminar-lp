@@ -209,7 +209,7 @@ function sendReply_(d) {
     '',
     '■参加URL（Zoom）',
     getProps_().zoomUrl,
-    '※両日とも同じURLです。開始時刻の19:00になりましたら、こちらからご参加ください。',
+    '※開始時刻の19:00になりましたら、こちらからご参加ください。',
     '',
     '■お問い合わせ',
     'BEST SALON REPORT',
