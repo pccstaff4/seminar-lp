@@ -12,11 +12,13 @@
 var CONFIG = {
   // 送信元アドレス。空欄のときは、このスクリプトを持つアカウント（s.mori@pccinc.jp）から送ります。
   // 別のアドレスから送る場合は、そのアドレスをGmailの「送信元（エイリアス）」に登録してから入力してください。
-  FROM_ADDRESS: '',
+  FROM_ADDRESS: 'info@pccinc.jp',
   // メールの差出人名
   SENDER_NAME: 'BEST SALON REPORT',
   // 返信先（申込者がメールに返信したときの宛先）
   REPLY_TO: 'info@pccinc.jp',
+  // 申し込みがあったことを知らせる社内向けメールの宛先
+  NOTIFY_TO: 'support@pccinc.jp',
   // 申込締切（この時刻になったら受付終了。日本時間）
   DEADLINE: '2026-11-12T19:00:00+09:00',
   // 保存先のシート名
@@ -60,6 +62,22 @@ function sendTestMail() {
     name: 'テスト',
     date: '2026-11-11',
     email: Session.getActiveUser().getEmail()
+  });
+}
+
+/** 社内向けの申し込み通知を確認する（NOTIFY_TO 宛てにテスト送信） */
+function sendTestNotify() {
+  sendNotify_({
+    submissionId: 'テスト',
+    receivedAt: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss'),
+    date: '2026-11-11',
+    name: 'テスト',
+    salon: 'テストサロン',
+    position: '',
+    email: Session.getActiveUser().getEmail(),
+    phone: '000-0000-0000',
+    question: '',
+    utm: { utm_source: '', utm_medium: '', utm_campaign: '', utm_content: '' }
   });
 }
 
@@ -109,11 +127,11 @@ function doPost(e) {
       return json_({ ok: true });
     }
 
-    var now = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
+    d.receivedAt = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss');
     var sheet = getSheet_();
     if (sheet.getLastRow() === 0) setupSheet();
     sheet.appendRow([
-      now, DATES[d.date], d.name, d.salon, d.position, d.email, d.phone, d.question,
+      d.receivedAt, DATES[d.date], d.name, d.salon, d.position, d.email, d.phone, d.question,
       d.utm.utm_source, d.utm.utm_medium, d.utm.utm_campaign, d.utm.utm_content,
       '', '', ''
     ].map(safeCell_));
@@ -132,6 +150,11 @@ function doPost(e) {
     sendReply_(d);
   } catch (err) {
     console.error('自動返信メールの送信に失敗しました: ' + d.email, err);
+  }
+  try {
+    sendNotify_(d);
+  } catch (err) {
+    console.error('申し込み通知メールの送信に失敗しました', err);
   }
 
   return json_({ ok: true });
@@ -196,12 +219,56 @@ function sendReply_(d) {
     '※このメールにお心当たりのない場合は、お手数ですが上記までご連絡ください。'
   ].join('\n');
 
-  var options = { name: CONFIG.SENDER_NAME, replyTo: CONFIG.REPLY_TO };
+  sendMail_(d.email, subject, body, CONFIG.REPLY_TO);
+}
+
+function sendNotify_(d) {
+  var subject = '【BSRセミナー】お申し込みがありました（' + DATES[d.date] + '）';
+  var body = [
+    'BEST SALON REPORT 無料オンラインセミナーのLPからお申し込みがありました。',
+    '',
+    '受付番号：' + d.submissionId,
+    '申込日時：' + d.receivedAt,
+    '',
+    '【参加希望日】',
+    DATES[d.date],
+    '',
+    '【お名前】',
+    d.name,
+    '',
+    '【サロン名】',
+    d.salon,
+    '',
+    '【役職】',
+    d.position || '（未入力）',
+    '',
+    '【メール】',
+    d.email,
+    '',
+    '【携帯電話番号】',
+    d.phone,
+    '',
+    '【当日聞きたいこと】',
+    d.question || '（未入力）',
+    '',
+    '【流入元】',
+    'utm_source：' + d.utm.utm_source,
+    'utm_medium：' + d.utm.utm_medium,
+    'utm_campaign：' + d.utm.utm_campaign,
+    'utm_content：' + d.utm.utm_content
+  ].join('\n');
+
+  // 返信すると申込者に届くようにする
+  sendMail_(CONFIG.NOTIFY_TO, subject, body, d.email);
+}
+
+function sendMail_(to, subject, body, replyTo) {
+  var options = { name: CONFIG.SENDER_NAME, replyTo: replyTo };
   if (CONFIG.FROM_ADDRESS) {
     options.from = CONFIG.FROM_ADDRESS;
-    GmailApp.sendEmail(d.email, subject, body, options);
+    GmailApp.sendEmail(to, subject, body, options);
   } else {
-    MailApp.sendEmail(d.email, subject, body, options);
+    MailApp.sendEmail(to, subject, body, options);
   }
 }
 
