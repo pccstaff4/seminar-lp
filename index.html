@@ -556,7 +556,14 @@ h3 {
   var formError = document.getElementById('formError');
   var submitting = false;
 
-  document.getElementById('lineBtn').href = CONFIG.LINE_URL;
+  var lineBtn = document.getElementById('lineBtn');
+  lineBtn.href = CONFIG.LINE_URL;
+  // LINEボタンのクリック（申し込み完了ではないので CompleteRegistration・Lead とは分ける）
+  lineBtn.addEventListener('click', function () {
+    if (typeof fbq === 'function') {
+      fbq('trackCustom', 'SeminarLineClick', { content_name: 'BSRセミナー_2026-11' });
+    }
+  });
 
   // 「お申し込みはこちら」→ フォームへスクロール
   Array.prototype.forEach.call(document.querySelectorAll('.js-to-form'), function (a) {
