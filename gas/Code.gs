@@ -20,20 +20,20 @@ var CONFIG = {
   // 申し込みがあったことを知らせる社内向けメールの宛先
   NOTIFY_TO: 'support@pccinc.jp',
   // 申込締切（この時刻になったら受付終了。日本時間）
-  DEADLINE: '2026-11-12T19:00:00+09:00',
+  DEADLINE: '2026-11-27T19:00:00+09:00',
   // 保存先のシート名
   SHEET_NAME: '202611申し込み'
 };
 // =================================
 
 var DATES = {
-  '2026-11-11': '11月11日（水）19:00〜',
-  '2026-11-12': '11月12日（木）19:00〜'
+  '2026-11-24': '11月24日（火）19:00〜',
+  '2026-11-27': '11月27日（金）19:00〜'
 };
 
 var DATE_LABELS_MAIL = {
-  '2026-11-11': '2026年11月11日（水）19:00〜',
-  '2026-11-12': '2026年11月12日（木）19:00〜'
+  '2026-11-24': '2026年11月24日（火）19:00〜',
+  '2026-11-27': '2026年11月27日（金）19:00〜'
 };
 
 var HEADERS = [
@@ -60,7 +60,7 @@ function sendTestMail() {
   getProps_();
   sendReply_({
     name: 'テスト',
-    date: '2026-11-11',
+    date: '2026-11-24',
     email: Session.getActiveUser().getEmail()
   });
 }
@@ -70,7 +70,7 @@ function sendTestNotify() {
   sendNotify_({
     submissionId: 'テスト',
     receivedAt: Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss'),
-    date: '2026-11-11',
+    date: '2026-11-24',
     name: 'テスト',
     salon: 'テストサロン',
     position: '',

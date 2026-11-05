@@ -20,7 +20,7 @@ gas/Code.gs         申し込み受付（Google Apps Script）
 | `gas/Code.gs` の `CONFIG.FROM_ADDRESS` | `info@pccinc.jp` | 自動返信・社内通知の送信元。s.mori のGmailに送信元エイリアスとして登録済み。空欄にすると s.mori@pccinc.jp から送信 |
 | `gas/Code.gs` の `CONFIG.NOTIFY_TO` | `support@pccinc.jp` | 申し込みがあったことを知らせる社内向けメールの宛先（返信すると申込者に届く） |
 
-申込締切は `index.html` と `gas/Code.gs` の `DEADLINE`（2026-11-12 19:00 日本時間。18:59まで受付）。変える場合は両方を同じ値にします。
+申込締切は `index.html` と `gas/Code.gs` の `DEADLINE`（2026-11-27 19:00 日本時間。18:59まで受付）。変える場合は両方を同じ値にします。
 
 ## ローカルでの確認
 
